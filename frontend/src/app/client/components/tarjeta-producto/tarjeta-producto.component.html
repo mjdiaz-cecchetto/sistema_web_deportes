@@ -1,0 +1,97 @@
+<div 
+  class="group relative h-full flex flex-col bg-white dark:bg-neutral-900/50 rounded-2xl md:rounded-[2rem] overflow-hidden border border-neutral-200 dark:border-neutral-800/50 hover:border-neutral-300 dark:border-neutral-700/80 hover:bg-white dark:bg-neutral-900 transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] transform-gpu will-change-transform"
+  (mouseenter)="isHovered = true"
+  (mouseleave)="isHovered = false"
+>
+  <div class="relative aspect-[4/5] overflow-hidden bg-neutral-50 dark:bg-neutral-950 p-1.5 md:p-2 cursor-pointer transform-gpu" [routerLink]="['/producto', producto.id]">
+    <div class="relative w-full h-full rounded-xl md:rounded-[1.5rem] overflow-hidden transform-gpu">
+      
+      <div class="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-xl md:rounded-[1.5rem]"></div>
+      
+      <img 
+        [src]="producto.image" 
+        [alt]="producto.name"
+        (error)="onImageError($event)"
+        class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+        [class.opacity-100]="!isHovered"
+        [class.opacity-0]="isHovered"
+        [class.scale-110]="isHovered"
+        [class.scale-100]="!isHovered"
+      />
+      
+      <img 
+        [src]="producto.imageBack" 
+        [alt]="producto.name + ' Reverse'"
+        (error)="onImageError($event)"
+        class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+        [class.scale-105]="isHovered"
+        [class.opacity-100]="isHovered"
+        [class.scale-100]="!isHovered"
+        [class.opacity-0]="!isHovered"
+      />
+
+      <div *ngIf="producto.badge && badgeConfig" 
+           class="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex items-center px-1.5 py-1 md:px-3 md:py-1.5 rounded-full text-[8px] md:text-[10px] font-black tracking-widest uppercase backdrop-blur-md border"
+           [ngClass]="[badgeConfig.bg, badgeConfig.text, badgeConfig.border]">
+        <app-icono [nombre]="badgeConfig.icon" [size]="12" className="mr-1.5"></app-icono>
+        <span class="hidden sm:inline">{{producto.badge}}</span>
+      </div>
+
+      <button 
+        (click)="toggleFavorite($event)"
+        class="absolute top-2 right-2 md:top-4 md:right-4 z-10 p-2 md:p-3 rounded-full bg-neutral-50 dark:bg-neutral-950/40 backdrop-blur-md border border-white/10 text-neutral-900 dark:text-white hover:bg-white dark:bg-neutral-900 transition-all duration-300 active:scale-90 group/btn"
+      >
+        <app-icono 
+          nombre="heart" 
+          [size]="14" 
+          className="transition-all duration-500 ease-out md:w-[18px] md:h-[18px]"
+          [ngClass]="{
+            'fill-rose-500 text-rose-500 scale-110 shadow-rose-500 drop-shadow-[0_0_8px_rgba(244,63,94,0.8)]': isFavorite,
+            'fill-transparent text-neutral-900 dark:text-white group-hover/btn:scale-110': !isFavorite
+          }"
+        ></app-icono>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="p-3 md:p-5 flex flex-col flex-grow gap-2 md:gap-3">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-2 md:gap-4">
+      <div class="flex-1 w-full cursor-pointer" [routerLink]="['/producto', producto.id]">
+        <p class="text-[9px] md:text-[11px] font-bold tracking-widest text-neutral-500 uppercase mb-1 md:mb-1.5 flex items-center gap-1.5 md:gap-2">
+          {{producto.brand}} <span class="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700"></span> {{producto.year}}
+        </p>
+        <h3 class="text-[13px] md:text-lg font-bold text-neutral-900 dark:text-white leading-tight group-hover:text-amber-400 transition-colors">{{producto.name}}</h3>
+        
+        <!-- Talles -->
+        <div class="mt-3 flex flex-wrap gap-1 md:gap-2">
+          <button *ngFor="let size of producto.sizes" 
+                  (click)="selectSize(size, $event)"
+                  class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg border text-[10px] md:text-xs font-bold hover:scale-110 transition-all"
+                  [ngClass]="selectedSize === size ? 
+                    'bg-amber-500 dark:bg-amber-500 border-amber-500 dark:border-amber-500 text-neutral-950 dark:text-neutral-950 shadow-lg shadow-amber-500/30 dark:shadow-amber-500/20' : 
+                    'bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-700'">
+            {{size}}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-auto flex flex-wrap items-center justify-between pt-3 border-t border-neutral-200 dark:border-neutral-800 gap-2">
+      <div class="bg-neutral-100 dark:bg-neutral-800/80 backdrop-blur-sm border border-neutral-300 dark:border-neutral-700/50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl">
+        <span class="text-sm md:text-base font-black text-neutral-900 dark:text-white">
+          {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
+        </span>
+      </div>
+      
+      <div class="flex gap-2">
+        <button class="p-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-amber-500 hover:bg-white dark:hover:bg-neutral-700 transition-all border border-neutral-200 dark:border-neutral-700" title="Ver detalle" [routerLink]="['/producto', producto.id]">
+          <app-icono nombre="eye" [size]="18"></app-icono>
+        </button>
+        <button class="p-2 rounded-xl bg-amber-500 text-neutral-950 hover:bg-amber-400 hover:scale-105 transition-all font-bold shadow-lg shadow-amber-500/20" title="Agregar al carrito">
+          <app-icono nombre="shopping-cart" [size]="18"></app-icono>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

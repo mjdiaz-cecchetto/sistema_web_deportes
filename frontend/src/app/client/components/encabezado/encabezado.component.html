@@ -1,0 +1,93 @@
+<!-- 1. Ticker Banner Ultra-Premium -->
+<div class="relative w-full overflow-hidden bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 py-1.5 md:py-2 z-[60]">
+  <div class="animate-marquee whitespace-nowrap flex items-center gap-8 md:gap-16">
+    <!-- Repetimos el mensaje varias veces para crear el efecto de marquesina infinita -->
+    <ng-container *ngFor="let i of [1,2,3,4,5,6]">
+      <div class="flex items-center gap-3 text-neutral-950 font-black tracking-widest text-[9px] md:text-xs uppercase">
+        <span>⚡ DROP EXCLUSIVO 24/25 YA DISPONIBLE</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-950"></span>
+        <span>ENVÍOS GRATIS DESDE $150.000</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-950"></span>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- 2. Navbar Principal Glassmorphism -->
+<header class="sticky top-0 z-[55] w-full border-b border-neutral-200/50 dark:border-white/5 bg-white/70 dark:bg-neutral-950/60 backdrop-blur-xl supports-[backdrop-filter]:bg-white/50 supports-[backdrop-filter]:dark:bg-neutral-950/40 transition-all duration-300 transform-gpu">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      
+      <!-- LOGO -->
+      <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer group">
+        <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-neutral-900 dark:bg-white flex items-center justify-center transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+          <span class="text-white dark:text-neutral-950 font-black text-lg md:text-xl font-serif">V</span>
+        </div>
+        <span class="text-xl md:text-2xl font-black tracking-tighter text-neutral-900 dark:text-white uppercase">Vancant<span class="text-amber-500">.</span></span>
+      </div>
+
+      <!-- ACCIONES DERECHA -->
+      <div class="flex items-center gap-2 md:gap-4">
+        <!-- Carrito (Botón destacado) -->
+        <button class="relative flex items-center justify-center p-2.5 md:px-5 md:py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg group">
+          <app-icono nombre="shopping-cart" [size]="20" class="group-hover:animate-bounce"></app-icono>
+          <span class="hidden md:block ml-2 font-bold text-sm">Carrito</span>
+          <!-- Badge animado del carrito -->
+          <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 flex h-5 w-5 md:h-6 md:w-6">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-5 w-5 md:h-6 md:w-6 bg-amber-500 items-center justify-center text-[10px] md:text-xs font-black text-neutral-950 border-2 border-neutral-900 dark:border-white">3</span>
+          </span>
+        </button>
+
+        <!-- Hamburguesa Mobile -->
+        <button (click)="toggleMenu()" class="lg:hidden p-2.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl active:scale-95 transition-all">
+          <app-icono [nombre]="isMobileMenuOpen ? 'x' : 'menu'" [size]="24"></app-icono>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 3. Menú Overlay Móvil (Pantalla Completa) -->
+<div class="fixed inset-0 z-[52] bg-neutral-50/95 dark:bg-neutral-950/95 backdrop-blur-2xl transition-all duration-500 flex flex-col justify-between"
+     [class.opacity-0]="!isMobileMenuOpen"
+     [class.pointer-events-none]="!isMobileMenuOpen"
+     [class.translate-y-8]="!isMobileMenuOpen"
+     [class.opacity-100]="isMobileMenuOpen"
+     [class.translate-y-0]="isMobileMenuOpen">
+  
+  <div class="pt-28 px-8 flex flex-col gap-5">
+    <a *ngFor="let link of navLinks; let i = index" 
+       href="javascript:void(0)"
+       (click)="toggleMenu()"
+       class="text-2xl sm:text-3xl font-medium tracking-wide transition-all duration-300 transform"
+       [style.transition-delay]="isMobileMenuOpen ? (i * 50) + 'ms' : '0ms'"
+       [class.translate-x-0]="isMobileMenuOpen"
+       [class.-translate-x-8]="!isMobileMenuOpen"
+       [class.opacity-100]="isMobileMenuOpen"
+       [class.opacity-0]="!isMobileMenuOpen"
+       [ngClass]="link.active ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'">
+      {{link.label}}
+    </a>
+  </div>
+
+  <div class="pb-12 px-8 flex flex-col gap-5 opacity-0 transform translate-y-4 transition-all duration-700 delay-200"
+       [class.opacity-100]="isMobileMenuOpen"
+       [class.translate-y-0]="isMobileMenuOpen">
+    <div class="w-12 h-px bg-neutral-300 dark:bg-neutral-800 mb-2"></div>
+    <div class="flex flex-col gap-4">
+      <button class="text-left text-sm font-semibold tracking-widest uppercase text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        Mi Cuenta
+      </button>
+      <button class="text-left text-sm font-semibold tracking-widest uppercase text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        Favoritos
+      </button>
+      <button class="text-left text-sm font-semibold tracking-widest uppercase text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        Buscar
+      </button>
+      <button class="text-left text-sm font-semibold tracking-widest uppercase text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        Ayuda y Contacto
+      </button>
+    </div>
+  </div>
+</div>

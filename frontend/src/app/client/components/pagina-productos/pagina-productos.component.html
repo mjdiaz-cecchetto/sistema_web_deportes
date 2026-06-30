@@ -1,0 +1,133 @@
+<div class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans selection:bg-amber-500 selection:text-neutral-950 pb-24">
+  
+  <app-encabezado></app-encabezado>
+  
+  <app-portada></app-portada>
+
+  <!-- Filters -->
+  <div id="catalogo" class="sticky top-0 z-50 bg-neutral-50/80 dark:bg-neutral-950/70 backdrop-blur-2xl border-y border-neutral-200 dark:border-neutral-800/50 mt-12 py-4 transform-gpu scroll-mt-20">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col lg:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 w-full lg:w-auto">
+        <div class="relative w-full lg:w-72 group">
+          <app-icono nombre="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-amber-400 transition-colors" [size]="18"></app-icono>
+          <input 
+            type="text" 
+            [(ngModel)]="busqueda"
+            placeholder="Buscar equipo, jugador o año..." 
+            class="w-full bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-3 pl-12 pr-4 text-sm font-medium text-neutral-900 dark:text-white focus:outline-none focus:border-amber-500/50 focus:bg-white dark:bg-neutral-900 transition-all placeholder:text-neutral-600 shadow-inner"
+          />
+        </div>
+        <button 
+          (click)="toggleMenuMovil()"
+          class="w-12 h-12 lg:w-auto lg:h-auto p-0 lg:p-3 flex-shrink-0 flex items-center justify-center lg:hidden rounded-2xl border transition-all"
+          [ngClass]="isMobileMenuOpen ? 'bg-amber-500 text-neutral-950 border-amber-500' : 'bg-white dark:bg-neutral-900/50 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'"
+        >
+          <app-icono nombre="filter" [size]="18"></app-icono>
+        </button>
+      </div>
+
+      <div class="w-full lg:w-auto mt-4 lg:mt-0 gap-3 lg:gap-4" [ngClass]="isMobileMenuOpen ? 'flex flex-col' : 'hidden lg:flex lg:flex-row lg:items-center'">
+        
+        <button 
+          (click)="toggleModoOscuro()"
+          class="w-full lg:w-auto flex items-center justify-center gap-2 p-3 lg:p-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-amber-500 transition-all hover:scale-105"
+          [title]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        >
+          <app-icono [nombre]="isDarkMode ? 'sun' : 'moon'" [size]="20"></app-icono>
+          <span class="lg:hidden font-bold text-sm">{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+        </button>
+
+        <div class="flex items-center p-1.5 bg-white dark:bg-neutral-900/50 rounded-2xl border border-neutral-200 dark:border-neutral-800 w-full lg:w-auto">
+          <button 
+            (click)="cambiarMarca('All')"
+            class="flex-1 lg:flex-none px-5 py-2.5 lg:py-2 rounded-xl text-sm font-bold transition-all duration-300"
+            [ngClass]="marcaActiva === 'All' ? 'bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] scale-[1.02] lg:scale-105' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/50'"
+          >
+            All
+          </button>
+          
+          <button 
+            (click)="cambiarMarca('Retro')"
+            class="flex-1 lg:flex-none px-5 py-2.5 lg:py-2 rounded-xl text-sm font-bold transition-all duration-300"
+            [ngClass]="marcaActiva === 'Retro' ? 'bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] scale-[1.02] lg:scale-105' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/50'"
+          >
+            Retro
+          </button>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-3 relative w-full lg:w-auto">
+          <!-- Dropdown Ligas -->
+          <div class="relative w-full lg:w-auto">
+            <button 
+              (click)="toggleLigaMenu()"
+              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
+              [ngClass]="ligaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
+              {{ ligaActiva === 'Todas' ? 'Ligas' : ligaActiva }} 
+              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isLigaMenuOpen" class="transition-transform duration-300" [ngClass]="ligaActiva !== 'Todas' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+            </button>
+            
+            <!-- Menu Ligas -->
+            <div *ngIf="isLigaMenuOpen" class="absolute top-full left-0 right-0 lg:right-auto mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+              <button 
+                *ngFor="let liga of ligas" 
+                (click)="seleccionarLiga(liga)"
+                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                [ngClass]="ligaActiva === liga ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+                {{liga}}
+              </button>
+            </div>
+          </div>
+
+          <div class="hidden lg:block w-px h-8 bg-neutral-200 dark:bg-neutral-800 mx-1 self-center"></div>
+          
+          <!-- Dropdown Ordenar -->
+          <div class="relative w-full lg:w-auto">
+            <button 
+              (click)="toggleOrdenMenu()"
+              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
+              [ngClass]="ordenActivo !== 'Recomendados' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
+              <div class="flex items-center gap-2">
+                <app-icono nombre="filter" [size]="16"></app-icono> 
+                {{ ordenActivo }}
+              </div>
+              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isOrdenMenuOpen" class="transition-transform duration-300 lg:hidden" [ngClass]="ordenActivo !== 'Recomendados' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+            </button>
+
+            <!-- Menu Ordenar -->
+            <div *ngIf="isOrdenMenuOpen" class="absolute top-full left-0 right-0 lg:left-auto lg:right-0 mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+              <button 
+                *ngFor="let orden of ordenes" 
+                (click)="seleccionarOrden(orden)"
+                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                [ngClass]="ordenActivo === orden ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+                {{orden}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Grid Area -->
+  <section class="px-4 md:px-8 py-12 max-w-[1400px] mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Selección Vancant</h2>
+        <p class="text-neutral-500 dark:text-neutral-400 font-medium">Camisetas con historia. Colección premium.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-neutral-500 font-bold bg-white dark:bg-neutral-900 px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800">
+          {{ productosFiltrados.length }} Resultados
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+      <app-tarjeta-producto 
+        *ngFor="let prod of productosFiltrados" 
+        [producto]="prod">
+      </app-tarjeta-producto>
+    </div>
+  </section>
+</div>
