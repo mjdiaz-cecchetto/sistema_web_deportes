@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductoService } from '../../services/producto.service';
-import { Producto } from '../../interfaces/producto.interface';
+import { CamisetaProducto } from '../../interfaces/producto.interface';
 import { IconoComponent } from '../icono/icono.component';
 import { PortadaComponent } from '../portada/portada.component';
 import { TarjetaProductoComponent } from '../tarjeta-producto/tarjeta-producto.component';
@@ -23,7 +23,7 @@ import { EncabezadoComponent } from '../encabezado/encabezado.component';
   styleUrl: './pagina-productos.component.scss'
 })
 export class PaginaProductosComponent implements OnInit {
-  productos: Producto[] = [];
+  productos: CamisetaProducto[] = [];
   
   // Estados
   busqueda: string = '';
@@ -40,7 +40,7 @@ export class PaginaProductosComponent implements OnInit {
   isDarkMode: boolean = true;
   isMobileMenuOpen: boolean = false;
   
-  ligas = ['Todas', 'Argentina', 'Brasil', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Selecciones'];
+  ligas = ['Todas', 'Liga Profesional Argentina', 'Brasileirão', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Selecciones', 'MLS'];
   ordenes = ['Recomendados', 'Mayor Precio', 'Menor Precio'];
 
   constructor(
@@ -102,14 +102,13 @@ export class PaginaProductosComponent implements OnInit {
     this.isOrdenMenuOpen = false;
   }
 
-  get productosFiltrados(): Producto[] {
+  get productosFiltrados(): CamisetaProducto[] {
     let filtrados = this.productos.filter(producto => {
       const searchLower = this.busqueda.toLowerCase();
-      const matchesSearch = producto.name.toLowerCase().includes(searchLower) || 
-                            producto.brand.toLowerCase().includes(searchLower) ||
-                            producto.year.includes(searchLower);
+      const searchString = `${producto.team} ${producto.season} ${producto.brand} ${producto.year} ${producto.customization?.playerName || ''}`.toLowerCase();
+      const matchesSearch = searchString.includes(searchLower);
       
-      const isRetro = parseInt(producto.year) <= 2010 || producto.badge === 'Vintage' || producto.badge === 'Mundialista';
+      const isRetro = producto.year <= 2010 || producto.badge === 'Vintage' || producto.badge === 'Mundialista';
       // marcaActiva se usa como Tipo (All / Retro)
       const matchesTipo = this.marcaActiva === 'All' || (this.marcaActiva === 'Retro' && isRetro);
 

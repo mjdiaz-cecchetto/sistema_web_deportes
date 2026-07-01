@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
-import { Producto } from '../../interfaces/producto.interface';
+import { CamisetaProducto } from '../../interfaces/producto.interface';
 import { IconoComponent } from '../icono/icono.component';
 import { EncabezadoComponent } from '../encabezado/encabezado.component';
 
@@ -14,7 +14,7 @@ import { EncabezadoComponent } from '../encabezado/encabezado.component';
   styleUrl: './detalle-producto.component.scss'
 })
 export class DetalleProductoComponent implements OnInit {
-  producto?: Producto;
+  producto?: CamisetaProducto;
   selectedSize: string | null = null;
   mainImage: string = '';
 
@@ -30,11 +30,21 @@ export class DetalleProductoComponent implements OnInit {
     if (id) {
       this.productoService.obtenerProductoPorId(id).subscribe(prod => {
         this.producto = prod;
-        if (prod) {
-          this.mainImage = prod.image;
+        if (prod && prod.images && prod.images.length > 0) {
+          const frontImg = prod.images.find(img => img.view === 'front');
+          this.mainImage = frontImg ? frontImg.url : prod.images[0].url;
         }
       });
     }
+  }
+
+  get displayName(): string {
+    if (!this.producto) return '';
+    let name = `${this.producto.team} ${this.producto.season} ${this.producto.type}`;
+    if (this.producto.customization) {
+      name += ` - ${this.producto.customization.playerName} ${this.producto.customization.number}`;
+    }
+    return name;
   }
 
   volver() {
@@ -42,7 +52,10 @@ export class DetalleProductoComponent implements OnInit {
   }
 
   selectSize(size: string) {
-    this.selectedSize = size;
+    const variant = this.producto?.variants.find(v => v.size === size);
+    if (variant && variant.stock > 0) {
+      this.selectedSize = size;
+    }
   }
 
   setMainImage(imgUrl: string) {

@@ -39,7 +39,7 @@
     <!-- TÍTULO Y PRECIO EN MOBILE (Arriba de la foto estilo Adidas) -->
     <div class="md:hidden px-4 pt-4 pb-2 bg-white dark:bg-neutral-950">
       <h1 class="text-lg font-black text-neutral-900 dark:text-white uppercase leading-tight tracking-tight mb-2">
-        {{producto.name}}
+        {{displayName}}
       </h1>
       <p class="text-base font-black text-neutral-900 dark:text-white mb-2">
         {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
@@ -53,37 +53,36 @@
       <div class="w-full md:w-1/2 flex flex-col md:gap-4 relative">
         
         <!-- Carrusel Mobile / Imagen Principal Desktop -->
-        <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar md:rounded-3xl md:border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 h-[60vh] md:h-auto">
-          <!-- Foto 1 -->
-          <div class="w-full flex-shrink-0 snap-center relative">
-            <img [src]="producto.image" [alt]="producto.name" class="w-full h-full object-cover md:aspect-square">
-            <div *ngIf="producto.badge" class="absolute top-4 right-4 md:top-4 md:left-auto md:right-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-[10px] md:text-xs font-black tracking-widest uppercase shadow-sm">
+        <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar md:rounded-3xl md:border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 h-[60vh] md:h-auto relative">
+          <!-- Mobile Carousel: Shows all images -->
+          <div *ngFor="let img of producto.images; let first = first" 
+               class="w-full h-full flex-shrink-0 snap-center relative md:hidden">
+            <img [src]="img.url" [alt]="img.alt" class="w-full h-full object-cover">
+            <div *ngIf="first && producto.badge" class="absolute top-4 right-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-[10px] font-black tracking-widest uppercase shadow-sm">
               {{producto.badge}}
             </div>
           </div>
-          <!-- Foto 2 -->
-          <div class="w-full flex-shrink-0 snap-center relative">
-            <img [src]="producto.imageBack" [alt]="producto.name + ' Reverso'" class="w-full h-full object-cover md:aspect-square">
+          <!-- Desktop Main Image -->
+          <div class="hidden md:block w-full relative">
+            <img [src]="mainImage" [alt]="displayName" class="w-full aspect-square object-cover">
+            <div *ngIf="producto.badge" class="absolute top-4 right-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-xs font-black tracking-widest uppercase shadow-sm">
+              {{producto.badge}}
+            </div>
           </div>
         </div>
 
         <!-- Indicador de scroll (Barrita estilo Adidas) - Solo mobile -->
         <div class="md:hidden w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1">
-          <div class="w-1/2 h-full bg-neutral-900 dark:bg-white"></div>
+          <div class="w-1/2 h-full bg-neutral-900 dark:bg-white transition-all duration-300"></div>
         </div>
         
         <!-- Miniaturas (Thumbnails) - Solo Desktop -->
-        <div class="hidden md:flex justify-start gap-3 pb-2 mt-4">
-          <button (click)="setMainImage(producto.image)" 
-                  class="w-24 h-24 rounded-xl overflow-hidden border-2 transition-all"
-                  [ngClass]="mainImage === producto.image ? 'border-amber-500 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'">
-            <img [src]="producto.image" class="w-full h-full object-cover">
-          </button>
-          
-          <button (click)="setMainImage(producto.imageBack)" 
-                  class="w-24 h-24 rounded-xl overflow-hidden border-2 transition-all"
-                  [ngClass]="mainImage === producto.imageBack ? 'border-amber-500 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'">
-            <img [src]="producto.imageBack" class="w-full h-full object-cover">
+        <div class="hidden md:flex justify-start gap-3 pb-2 mt-4 overflow-x-auto">
+          <button *ngFor="let img of producto.images" 
+                  (click)="setMainImage(img.url)" 
+                  class="w-24 h-24 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0"
+                  [ngClass]="mainImage === img.url ? 'border-amber-500 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'">
+            <img [src]="img.url" [alt]="img.alt" class="w-full h-full object-cover">
           </button>
         </div>
       </div>
@@ -94,18 +93,32 @@
         <!-- Info Header Desktop (Oculto en mobile porque ya está arriba) -->
         <div class="hidden md:block mb-8">
           <p class="text-xs font-bold tracking-widest text-neutral-400 uppercase mb-2">
-            {{producto.brand}} • {{producto.year}}
+            {{producto.brand}} • {{producto.league}} • {{producto.year}}
           </p>
           <h1 class="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase leading-[1.1] tracking-tight mb-4">
-            {{producto.name}}
+            {{displayName}}
           </h1>
           <p class="text-3xl font-black text-amber-500">
             {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
           </p>
         </div>
 
+        <!-- Personalización (si aplica) -->
+        <div *ngIf="producto.customization" class="bg-neutral-100 dark:bg-neutral-900 flex items-center gap-4 p-4 mb-8 rounded-xl border border-neutral-200 dark:border-neutral-800">
+          <div class="w-12 h-12 flex items-center justify-center bg-white dark:bg-neutral-950 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-800">
+            <span class="text-xl font-black text-neutral-900 dark:text-white">{{producto.customization.number}}</span>
+          </div>
+          <div>
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 font-bold uppercase tracking-wider mb-0.5">Estampado Oficial</p>
+            <p class="text-base font-black text-neutral-900 dark:text-white uppercase">{{producto.customization.playerName}}</p>
+          </div>
+          <div *ngIf="producto.customization.isHistorical" class="ml-auto">
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest rounded border border-amber-500/20">Leyenda</span>
+          </div>
+        </div>
+
         <!-- Alerta de Tendencia -->
-        <div class="bg-neutral-100 dark:bg-neutral-900 flex items-start gap-3 p-4 mb-8">
+        <div *ngIf="!producto.customization" class="bg-neutral-100 dark:bg-neutral-900 flex items-start gap-3 p-4 mb-8 rounded-xl">
           <app-icono nombre="flame" [size]="20" class="text-neutral-900 dark:text-white flex-shrink-0 mt-0.5"></app-icono>
           <p class="text-sm text-neutral-900 dark:text-white">
             <strong>¡Tendencia!</strong> Este artículo tiene una alta demanda en este momento.
@@ -120,15 +133,23 @@
           </div>
           
           <div class="flex flex-wrap gap-2 md:gap-3">
-            <button *ngFor="let size of producto.sizes" 
-                    (click)="selectSize(size)"
-                    class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl border text-sm font-black transition-all"
-                    [ngClass]="selectedSize === size ? 
-                      'border-amber-500 bg-amber-500 text-neutral-950 shadow-lg shadow-amber-500/20 scale-105' : 
-                      'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-500'">
-              {{size}}
+            <button *ngFor="let variant of producto.variants" 
+                    (click)="selectSize(variant.size)"
+                    class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl border text-sm font-black transition-all relative overflow-hidden"
+                    [ngClass]="{
+                      'border-amber-500 bg-amber-500 text-neutral-950 shadow-lg shadow-amber-500/20 scale-105': selectedSize === variant.size && variant.stock > 0,
+                      'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-500': selectedSize !== variant.size && variant.stock > 0,
+                      'border-neutral-100 dark:border-neutral-800/50 bg-neutral-50 dark:bg-neutral-900/20 text-neutral-300 dark:text-neutral-700 cursor-not-allowed opacity-60': variant.stock === 0
+                    }">
+              <span [class.line-through]="variant.stock === 0" [class.opacity-50]="variant.stock === 0">{{variant.size}}</span>
+              <div *ngIf="variant.stock === 0" class="absolute inset-0 w-full h-full">
+                <div class="w-[140%] h-[1px] bg-neutral-300 dark:bg-neutral-700 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-45"></div>
+              </div>
             </button>
           </div>
+          <p *ngIf="selectedSize" class="mt-3 text-xs font-bold text-emerald-600 dark:text-emerald-500 flex items-center gap-1.5">
+            <app-icono nombre="check" [size]="14"></app-icono> En stock, listo para envío
+          </p>
         </div>
 
         <!-- Botón Añadir al Carrito (Redondeado y con animación) -->
