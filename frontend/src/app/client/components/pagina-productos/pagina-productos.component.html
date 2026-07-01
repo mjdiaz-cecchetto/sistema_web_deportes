@@ -56,6 +56,28 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-3 relative w-full lg:w-auto">
+          <!-- Dropdown Categorías -->
+          <div class="relative w-full lg:w-auto">
+            <button 
+              (click)="toggleCategoriaMenu()"
+              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
+              [ngClass]="categoriaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
+              {{ categoriaActiva === 'Todas' ? 'Tipo' : categoriaActiva }} 
+              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isCategoriaMenuOpen" class="transition-transform duration-300" [ngClass]="categoriaActiva !== 'Todas' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+            </button>
+            
+            <!-- Menu Categorías -->
+            <div *ngIf="isCategoriaMenuOpen" class="absolute top-full left-0 right-0 lg:right-auto mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+              <button 
+                *ngFor="let categoria of categorias" 
+                (click)="seleccionarCategoria(categoria)"
+                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                [ngClass]="categoriaActiva === categoria ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+                {{categoria}}
+              </button>
+            </div>
+          </div>
+
           <!-- Dropdown Ligas -->
           <div class="relative w-full lg:w-auto">
             <button 

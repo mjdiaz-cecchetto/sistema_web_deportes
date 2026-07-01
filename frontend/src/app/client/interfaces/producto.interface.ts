@@ -16,6 +16,7 @@ export interface PlayerCustomization {
 }
 
 export interface CamisetaProducto {
+  category: 'Camiseta' | 'Conjunto';
   id: string;
   team: string;
   season: string;

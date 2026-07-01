@@ -32,16 +32,19 @@ export class PaginaProductosComponent implements OnInit {
   // Nuevos filtros
   ligaActiva: string = 'Todas';
   ordenActivo: string = 'Mayor Precio';
+  categoriaActiva: string = 'Todas';
   
   // Dropdowns UI
   isLigaMenuOpen: boolean = false;
   isOrdenMenuOpen: boolean = false;
+  isCategoriaMenuOpen: boolean = false;
 
   isDarkMode: boolean = true;
   isMobileMenuOpen: boolean = false;
   
   ligas = ['Todas', 'Liga Profesional Argentina', 'Brasileirão', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Selecciones', 'MLS'];
   ordenes = ['Recomendados', 'Mayor Precio', 'Menor Precio'];
+  categorias = ['Todas', 'Camisetas', 'Conjuntos'];
 
   constructor(
     private productoService: ProductoService,
@@ -82,9 +85,21 @@ export class PaginaProductosComponent implements OnInit {
     this.marcaActiva = marca;
   }
 
+  toggleCategoriaMenu() {
+    this.isCategoriaMenuOpen = !this.isCategoriaMenuOpen;
+    this.isLigaMenuOpen = false;
+    this.isOrdenMenuOpen = false;
+  }
+
+  seleccionarCategoria(categoria: string) {
+    this.categoriaActiva = categoria;
+    this.isCategoriaMenuOpen = false;
+  }
+
   toggleLigaMenu() {
     this.isLigaMenuOpen = !this.isLigaMenuOpen;
     this.isOrdenMenuOpen = false;
+    this.isCategoriaMenuOpen = false;
   }
 
   seleccionarLiga(liga: string) {
@@ -95,6 +110,7 @@ export class PaginaProductosComponent implements OnInit {
   toggleOrdenMenu() {
     this.isOrdenMenuOpen = !this.isOrdenMenuOpen;
     this.isLigaMenuOpen = false;
+    this.isCategoriaMenuOpen = false;
   }
 
   seleccionarOrden(orden: string) {
@@ -113,8 +129,12 @@ export class PaginaProductosComponent implements OnInit {
       const matchesTipo = this.marcaActiva === 'All' || (this.marcaActiva === 'Retro' && isRetro);
 
       const matchesLiga = this.ligaActiva === 'Todas' || producto.league === this.ligaActiva;
+      
+      const matchesCategoria = this.categoriaActiva === 'Todas' || 
+                               (this.categoriaActiva === 'Camisetas' && producto.category === 'Camiseta') ||
+                               (this.categoriaActiva === 'Conjuntos' && producto.category === 'Conjunto');
 
-      return matchesSearch && matchesTipo && matchesLiga;
+      return matchesSearch && matchesTipo && matchesLiga && matchesCategoria;
     });
 
     if (this.ordenActivo === 'Mayor Precio') {
