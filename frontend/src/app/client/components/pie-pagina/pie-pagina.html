@@ -1,0 +1,107 @@
+<footer class="bg-neutral-950 text-neutral-300 font-sans border-t border-neutral-900 mt-24">
+  <!-- Newsletter Section -->
+  <div class="border-b border-neutral-800">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 lg:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div class="max-w-xl text-center md:text-left">
+        <h3 class="text-3xl font-black text-white tracking-tight mb-3">Únete al club Vancant.</h3>
+        <p class="text-neutral-400">Recibe acceso anticipado a camisetas exclusivas, descuentos de preventa y contenido sobre la historia del fútbol.</p>
+      </div>
+      <div class="w-full md:w-auto flex-shrink-0">
+        <form class="flex w-full md:w-[400px] relative" (submit)="$event.preventDefault()">
+          <input type="email" placeholder="Tu correo electrónico" 
+            class="w-full bg-neutral-900 border border-neutral-800 text-white px-6 py-4 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all placeholder:text-neutral-600">
+          <button type="submit" 
+            class="absolute right-2 top-2 bottom-2 bg-white text-neutral-950 px-6 font-bold rounded-lg hover:bg-neutral-200 transition-colors">
+            Suscribirme
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Footer Content -->
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 lg:py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      
+      <!-- Brand Info -->
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-white rounded flex items-center justify-center">
+            <span class="text-neutral-950 font-black text-xl leading-none" style="font-family: monospace;">V</span>
+          </div>
+          <span class="text-xl font-black text-white tracking-tight">VANCANT<span class="text-amber-500">.</span></span>
+        </div>
+        <p class="text-neutral-400 text-sm leading-relaxed">
+          Curadores de historia. Traemos de vuelta las camisetas que marcaron época, con la calidad y los detalles originales que los verdaderos hinchas exigen.
+        </p>
+        <div class="flex items-center gap-4 mt-2">
+          <a href="#" class="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-neutral-400 hover:bg-white hover:text-neutral-950 transition-colors">
+            <app-icono nombre="instagram" [size]="18"></app-icono>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-neutral-400 hover:bg-white hover:text-neutral-950 transition-colors">
+            <app-icono nombre="twitter" [size]="18"></app-icono>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-neutral-400 hover:bg-white hover:text-neutral-950 transition-colors">
+            <app-icono nombre="youtube" [size]="18"></app-icono>
+          </a>
+        </div>
+      </div>
+
+      <!-- Tienda -->
+      <div class="flex flex-col gap-5 lg:pl-10">
+        <h4 class="text-white font-bold tracking-wider uppercase text-sm">Tienda</h4>
+        <ul class="flex flex-col gap-3 text-sm">
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Nuevos Ingresos</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Colección Retro</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Selecciones Nacionales</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Ediciones Limitadas</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Tarjetas de Regalo</a></li>
+        </ul>
+      </div>
+
+      <!-- Ayuda -->
+      <div class="flex flex-col gap-5">
+        <h4 class="text-white font-bold tracking-wider uppercase text-sm">Ayuda</h4>
+        <ul class="flex flex-col gap-3 text-sm">
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Preguntas Frecuentes</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Envíos y Entregas</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Devoluciones</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Guía de Tallas</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-amber-500 transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal & Pagos -->
+      <div class="flex flex-col gap-5">
+        <h4 class="text-white font-bold tracking-wider uppercase text-sm">Legal</h4>
+        <ul class="flex flex-col gap-3 text-sm mb-6">
+          <li><a href="#" class="text-neutral-400 hover:text-white transition-colors">Términos de Servicio</a></li>
+          <li><a href="#" class="text-neutral-400 hover:text-white transition-colors">Política de Privacidad</a></li>
+        </ul>
+        <h4 class="text-white font-bold tracking-wider uppercase text-sm mb-1">Métodos de Pago</h4>
+        <div class="flex flex-wrap gap-2">
+          <!-- Dummy Payment Icons -->
+          <div class="px-3 py-1.5 bg-neutral-900 rounded border border-neutral-800 text-xs font-bold text-neutral-400">VISA</div>
+          <div class="px-3 py-1.5 bg-neutral-900 rounded border border-neutral-800 text-xs font-bold text-neutral-400">MASTERCARD</div>
+          <div class="px-3 py-1.5 bg-neutral-900 rounded border border-neutral-800 text-xs font-bold text-neutral-400">PAYPAL</div>
+          <div class="px-3 py-1.5 bg-neutral-900 rounded border border-neutral-800 text-xs font-bold text-neutral-400">MERCADO PAGO</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="border-t border-neutral-900">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-neutral-500 text-sm">
+        &copy; {{ currentYear }} Vancant Sports. Todos los derechos reservados.
+      </p>
+      <div class="flex items-center gap-6 text-sm">
+        <span class="flex items-center gap-2 text-neutral-400">
+          <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sistemas Operativos
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>

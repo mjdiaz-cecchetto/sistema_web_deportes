@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { CamisetaProducto } from '../../interfaces/producto.interface';
 import { IconoComponent } from '../icono/icono.component';
-import { EncabezadoComponent } from '../encabezado/encabezado.component';
 
 @Component({
   selector: 'app-detalle-producto',
   standalone: true,
-  imports: [CommonModule, RouterModule, IconoComponent, EncabezadoComponent],
+  imports: [CommonModule, RouterModule, IconoComponent],
   templateUrl: './detalle-producto.component.html',
   styleUrl: './detalle-producto.component.scss'
 })
@@ -20,12 +19,12 @@ export class DetalleProductoComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private productoService: ProductoService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    window.scrollTo(0, 0); // Al entrar, siempre arriba
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.productoService.obtenerProductoPorId(id).subscribe(prod => {
@@ -48,8 +47,10 @@ export class DetalleProductoComponent implements OnInit {
   }
 
   volver() {
-    this.location.back();
+    this.router.navigate(['/']);
   }
+
+  activeImageIndex = 0;
 
   selectSize(size: string) {
     const variant = this.producto?.variants.find(v => v.size === size);
@@ -60,5 +61,12 @@ export class DetalleProductoComponent implements OnInit {
 
   setMainImage(imgUrl: string) {
     this.mainImage = imgUrl;
+  }
+
+  onScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    const scrollLeft = target.scrollLeft;
+    const width = target.clientWidth;
+    this.activeImageIndex = Math.round(scrollLeft / width);
   }
 }

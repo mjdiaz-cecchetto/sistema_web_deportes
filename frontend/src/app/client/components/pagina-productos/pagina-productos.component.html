@@ -4,125 +4,97 @@
   
   <app-portada></app-portada>
 
-  <!-- Filters -->
-  <div id="catalogo" class="sticky top-0 z-50 bg-neutral-50/80 dark:bg-neutral-950/70 backdrop-blur-2xl border-y border-neutral-200 dark:border-neutral-800/50 mt-12 py-4 transform-gpu scroll-mt-20">
-    <div class="max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col lg:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3 w-full lg:w-auto">
-        <div class="relative w-full lg:w-72 group">
-          <app-icono nombre="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-amber-400 transition-colors" [size]="18"></app-icono>
+  <!-- MOBILE FILTERS (Old Style - Hidden on Desktop) -->
+  <div id="catalogo-mobile" class="block lg:hidden sticky top-0 z-50 bg-neutral-50/80 dark:bg-neutral-950/70 backdrop-blur-2xl border-y border-neutral-200 dark:border-neutral-800/50 py-3 transform-gpu scroll-mt-20">
+    <div class="px-4 flex flex-col items-center justify-between gap-3">
+      <div class="flex items-center gap-2 w-full">
+        <div class="relative w-full group">
+          <app-icono nombre="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-amber-500 transition-colors" [size]="18"></app-icono>
           <input 
             type="text" 
-            [(ngModel)]="busqueda"
+            [ngModel]="busqueda"
+            (ngModelChange)="actualizarBusqueda($event)"
             placeholder="Buscar equipo, jugador o año..." 
-            class="w-full bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-3 pl-12 pr-4 text-sm font-medium text-neutral-900 dark:text-white focus:outline-none focus:border-amber-500/50 focus:bg-white dark:bg-neutral-900 transition-all placeholder:text-neutral-600 shadow-inner"
-          />
+            class="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all placeholder:text-neutral-500 text-neutral-900 dark:text-white shadow-sm"
+          >
         </div>
         <button 
           (click)="toggleMenuMovil()"
-          class="w-12 h-12 lg:w-auto lg:h-auto p-0 lg:p-3 flex-shrink-0 flex items-center justify-center lg:hidden rounded-2xl border transition-all"
-          [ngClass]="isMobileMenuOpen ? 'bg-amber-500 text-neutral-950 border-amber-500' : 'bg-white dark:bg-neutral-900/50 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'"
+          class="w-10 h-10 p-0 flex-shrink-0 flex items-center justify-center rounded-xl border transition-all"
+          [ngClass]="isMobileMenuOpen ? 'bg-amber-500 text-neutral-950 border-amber-500' : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'"
         >
           <app-icono nombre="filter" [size]="18"></app-icono>
         </button>
       </div>
 
-      <div class="w-full lg:w-auto mt-4 lg:mt-0 gap-3 lg:gap-4" [ngClass]="isMobileMenuOpen ? 'flex flex-col' : 'hidden lg:flex lg:flex-row lg:items-center'">
-        
-        <button 
-          (click)="toggleModoOscuro()"
-          class="w-full lg:w-auto flex items-center justify-center gap-2 p-3 lg:p-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-amber-500 transition-all hover:scale-105"
-          [title]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
-        >
-          <app-icono [nombre]="isDarkMode ? 'sun' : 'moon'" [size]="20"></app-icono>
-          <span class="lg:hidden font-bold text-sm">{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
-        </button>
-
-        <div class="flex items-center p-1.5 bg-white dark:bg-neutral-900/50 rounded-2xl border border-neutral-200 dark:border-neutral-800 w-full lg:w-auto">
+      <div class="w-full mt-2 gap-2" [ngClass]="isMobileMenuOpen ? 'flex flex-col' : 'hidden'">
+        <div class="flex items-center p-1 bg-neutral-100 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-700 w-full shadow-inner">
           <button 
             (click)="cambiarMarca('All')"
-            class="flex-1 lg:flex-none px-5 py-2.5 lg:py-2 rounded-xl text-sm font-bold transition-all duration-300"
-            [ngClass]="marcaActiva === 'All' ? 'bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] scale-[1.02] lg:scale-105' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/50'"
-          >
-            All
-          </button>
-          
+            class="flex-1 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300"
+            [ngClass]="marcaActiva === 'All' ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white shadow-sm scale-[1.02]' : 'text-neutral-500 dark:text-neutral-400'"
+          >All</button>
           <button 
             (click)="cambiarMarca('Retro')"
-            class="flex-1 lg:flex-none px-5 py-2.5 lg:py-2 rounded-xl text-sm font-bold transition-all duration-300"
-            [ngClass]="marcaActiva === 'Retro' ? 'bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] scale-[1.02] lg:scale-105' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/50'"
-          >
-            Retro
-          </button>
+            class="flex-1 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300"
+            [ngClass]="marcaActiva === 'Retro' ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white shadow-sm scale-[1.02]' : 'text-neutral-500 dark:text-neutral-400'"
+          >Retro</button>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-3 relative w-full lg:w-auto">
-          <!-- Dropdown Categorías -->
-          <div class="relative w-full lg:w-auto">
+        <div class="flex flex-col sm:flex-row gap-2 relative w-full">
+          <div class="relative w-full">
             <button 
               (click)="toggleCategoriaMenu()"
-              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
-              [ngClass]="categoriaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
+              class="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm"
+              [ngClass]="categoriaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
               {{ categoriaActiva === 'Todas' ? 'Tipo' : categoriaActiva }} 
-              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isCategoriaMenuOpen" class="transition-transform duration-300" [ngClass]="categoriaActiva !== 'Todas' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+              <app-icono nombre="chevron-down" [size]="14" [class.rotate-180]="isCategoriaMenuOpen" class="transition-transform duration-300"></app-icono>
             </button>
-            
-            <!-- Menu Categorías -->
-            <div *ngIf="isCategoriaMenuOpen" class="absolute top-full left-0 right-0 lg:right-auto mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+            <div *ngIf="isCategoriaMenuOpen" class="absolute top-full left-0 right-0 mt-2 w-full bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-[60]">
               <button 
                 *ngFor="let categoria of categorias" 
                 (click)="seleccionarCategoria(categoria)"
-                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                class="w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 [ngClass]="categoriaActiva === categoria ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
                 {{categoria}}
               </button>
             </div>
           </div>
 
-          <!-- Dropdown Ligas -->
-          <div class="relative w-full lg:w-auto">
+          <div class="relative w-full">
             <button 
               (click)="toggleLigaMenu()"
-              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
-              [ngClass]="ligaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
+              class="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm"
+              [ngClass]="ligaActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
               {{ ligaActiva === 'Todas' ? 'Ligas' : ligaActiva }} 
-              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isLigaMenuOpen" class="transition-transform duration-300" [ngClass]="ligaActiva !== 'Todas' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+              <app-icono nombre="chevron-down" [size]="14" [class.rotate-180]="isLigaMenuOpen" class="transition-transform duration-300"></app-icono>
             </button>
-            
-            <!-- Menu Ligas -->
-            <div *ngIf="isLigaMenuOpen" class="absolute top-full left-0 right-0 lg:right-auto mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+            <div *ngIf="isLigaMenuOpen" class="absolute top-full left-0 right-0 mt-2 w-full max-h-60 overflow-y-auto bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-xl z-[60]">
               <button 
                 *ngFor="let liga of ligas" 
                 (click)="seleccionarLiga(liga)"
-                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                class="w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 [ngClass]="ligaActiva === liga ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
                 {{liga}}
               </button>
             </div>
           </div>
-
-          <div class="hidden lg:block w-px h-8 bg-neutral-200 dark:bg-neutral-800 mx-1 self-center"></div>
           
-          <!-- Dropdown Ordenar -->
-          <div class="relative w-full lg:w-auto">
+          <div class="relative w-full">
             <button 
-              (click)="toggleOrdenMenu()"
-              class="w-full lg:w-auto flex items-center justify-between lg:justify-start gap-2 px-5 py-3 lg:py-2.5 bg-white dark:bg-neutral-900/50 rounded-2xl border text-sm font-bold transition-all"
-              [ngClass]="ordenActivo !== 'Recomendados' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-600 hover:bg-white dark:bg-neutral-900'">
-              <div class="flex items-center gap-2">
-                <app-icono nombre="filter" [size]="16"></app-icono> 
-                {{ ordenActivo }}
-              </div>
-              <app-icono nombre="chevron-down" [size]="16" [class.rotate-180]="isOrdenMenuOpen" class="transition-transform duration-300 lg:hidden" [ngClass]="ordenActivo !== 'Recomendados' ? 'text-amber-500' : 'text-neutral-500'"></app-icono>
+              (click)="toggleSeleccionMenu()"
+              class="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm"
+              [ngClass]="seleccionActiva !== 'Todas' ? 'border-amber-500 text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+              {{ seleccionActiva === 'Todas' ? 'Países' : seleccionActiva }} 
+              <app-icono nombre="chevron-down" [size]="14" [class.rotate-180]="isSeleccionMenuOpen" class="transition-transform duration-300"></app-icono>
             </button>
-
-            <!-- Menu Ordenar -->
-            <div *ngIf="isOrdenMenuOpen" class="absolute top-full left-0 right-0 lg:left-auto lg:right-0 mt-2 w-full lg:w-48 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden z-50">
+            <div *ngIf="isSeleccionMenuOpen" class="absolute top-full left-0 right-0 mt-2 w-full max-h-60 overflow-y-auto bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-xl z-[60]">
               <button 
-                *ngFor="let orden of ordenes" 
-                (click)="seleccionarOrden(orden)"
-                class="w-full text-left px-4 py-3 lg:py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                [ngClass]="ordenActivo === orden ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
-                {{orden}}
+                *ngFor="let seleccion of selecciones" 
+                (click)="seleccionarSeleccion(seleccion)"
+                class="w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                [ngClass]="seleccionActiva === seleccion ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+                {{seleccion}}
               </button>
             </div>
           </div>
@@ -131,43 +103,228 @@
     </div>
   </div>
 
-  <!-- Product Grid Area -->
-  <section class="px-4 md:px-8 py-12 max-w-[1400px] mx-auto">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-      <div>
-        <h2 class="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Selección Vancant</h2>
-        <p class="text-neutral-500 dark:text-neutral-400 font-medium">Camisetas con historia. Colección premium.</p>
+  <section id="catalogo-productos" class="max-w-[1400px] mx-auto px-4 md:px-8 py-8 md:py-12 flex flex-col lg:flex-row gap-8 items-start">
+    
+    <!-- LEFT SIDEBAR (Filters on Desktop) -->
+    <aside class="hidden lg:flex w-72 flex-shrink-0 flex-col gap-6 sticky top-24 z-40 h-[calc(100vh-7rem)] overflow-y-auto pr-2 pb-6 custom-scrollbar">
+      
+      <!-- Titulo Filtros -->
+      <div class="flex items-center gap-2 mb-2">
+        <app-icono nombre="filter" [size]="20"></app-icono>
+        <h3 class="text-xl font-black">Filtros</h3>
       </div>
-      <div class="flex items-center gap-3">
-        <span class="text-sm text-neutral-500 font-bold bg-white dark:bg-neutral-900 px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800">
-          {{ productosFiltrados.length }} Resultados
-        </span>
+
+      <!-- Buscador (Desktop) -->
+      <div class="relative w-full group">
+        <app-icono nombre="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-amber-500 transition-colors" [size]="18"></app-icono>
+        <input 
+          type="text" 
+          [(ngModel)]="busqueda"
+          placeholder="Buscar equipo, jugador o año..." 
+          class="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium text-neutral-900 dark:text-white focus:outline-none focus:border-amber-500/50 focus:bg-white dark:bg-neutral-900 transition-all placeholder:text-neutral-600 shadow-sm"
+        />
       </div>
-    </div>
 
-    <div *ngIf="productosFiltrados.length > 0; else emptyState" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-      <app-tarjeta-producto 
-        *ngFor="let prod of productosFiltrados" 
-        [producto]="prod">
-      </app-tarjeta-producto>
-    </div>
-
-    <!-- Estado Vacío -->
-    <ng-template #emptyState>
-      <div class="flex flex-col items-center justify-center py-10 md:py-20 px-4 text-center w-full">
-        <div class="w-16 h-16 md:w-24 md:h-24 mb-4 md:mb-6 rounded-full bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
-          <app-icono nombre="search" [size]="24" class="text-neutral-400 dark:text-neutral-500"></app-icono>
+      <!-- Contenedor de Filtros (Fijo en Desktop) -->
+      <div class="flex flex-col gap-6">
+        
+        <!-- Filtro: Categoría -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+          <h4 class="text-xs font-black uppercase tracking-widest text-neutral-500 mb-4">Categoría</h4>
+          <div class="flex flex-col gap-2">
+            <button 
+              *ngFor="let cat of categorias"
+              (click)="seleccionarCategoria(cat)"
+              class="flex items-center gap-3 text-left w-full py-1.5 group"
+            >
+              <div class="w-5 h-5 rounded border flex items-center justify-center transition-colors"
+                [ngClass]="categoriaActiva === cat ? 'bg-amber-500 border-amber-500 text-neutral-950' : 'border-neutral-300 dark:border-neutral-700 group-hover:border-amber-500/50'">
+                <app-icono *ngIf="categoriaActiva === cat" nombre="check" [size]="12" stroke-width="3"></app-icono>
+              </div>
+              <span class="font-medium text-sm transition-colors"
+                [ngClass]="categoriaActiva === cat ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'">
+                {{ cat }}
+              </span>
+            </button>
+          </div>
         </div>
-        <h3 class="text-xl md:text-2xl font-black text-neutral-900 dark:text-white mb-2 md:mb-3">No encontramos resultados</h3>
-        <p class="text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-md mx-auto mb-6 md:mb-8">
-          No hay productos que coincidan con tu búsqueda o filtros actuales. Intenta buscar con otros términos o ajusta las opciones.
-        </p>
-        <button 
-          (click)="busqueda = ''; ligaActiva = 'Todas'; marcaActiva = 'All'; categoriaActiva = 'Todas'"
-          class="px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-base bg-neutral-900 hover:bg-black dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 font-bold rounded-xl shadow-lg transition-all active:scale-95">
-          Limpiar todos los filtros
-        </button>
+
+        <!-- Filtro: Ligas -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+          <h4 class="text-xs font-black uppercase tracking-widest text-neutral-500 mb-4">Competición / Liga</h4>
+          <div class="flex flex-col gap-2">
+            <button 
+              *ngFor="let liga of ligas"
+              (click)="seleccionarLiga(liga)"
+              class="flex items-center gap-3 text-left w-full py-1.5 group"
+            >
+              <div class="w-5 h-5 rounded-full border flex items-center justify-center transition-colors"
+                [ngClass]="ligaActiva === liga ? 'bg-neutral-900 dark:bg-white border-neutral-900 dark:border-white text-white dark:text-neutral-900' : 'border-neutral-300 dark:border-neutral-700 group-hover:border-neutral-500'">
+                <div *ngIf="ligaActiva === liga" class="w-2 h-2 rounded-full bg-current"></div>
+              </div>
+              <span class="font-medium text-sm transition-colors"
+                [ngClass]="ligaActiva === liga ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'">
+                {{ liga }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtro: Selecciones -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+          <h4 class="text-xs font-black uppercase tracking-widest text-neutral-500 mb-4">Selecciones Nacionales</h4>
+          <div class="flex flex-col gap-2 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
+            <button 
+              *ngFor="let seleccion of selecciones"
+              (click)="seleccionarSeleccion(seleccion)"
+              class="flex items-center gap-3 text-left w-full py-1.5 group"
+            >
+              <div class="w-5 h-5 rounded-full border flex items-center justify-center transition-colors"
+                [ngClass]="seleccionActiva === seleccion ? 'bg-neutral-900 dark:bg-white border-neutral-900 dark:border-white text-white dark:text-neutral-900' : 'border-neutral-300 dark:border-neutral-700 group-hover:border-neutral-500'">
+                <div *ngIf="seleccionActiva === seleccion" class="w-2 h-2 rounded-full bg-current"></div>
+              </div>
+              <span class="font-medium text-sm transition-colors"
+                [ngClass]="seleccionActiva === seleccion ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'">
+                {{ seleccion }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtro: Tipo (Retro vs Actual) -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+          <h4 class="text-xs font-black uppercase tracking-widest text-neutral-500 mb-4">Época</h4>
+          <div class="flex flex-col gap-2">
+            <button 
+              (click)="cambiarMarca('All')"
+              class="flex items-center gap-3 text-left w-full py-1.5 group"
+            >
+              <div class="w-5 h-5 rounded border flex items-center justify-center transition-colors"
+                [ngClass]="marcaActiva === 'All' ? 'bg-amber-500 border-amber-500 text-neutral-950' : 'border-neutral-300 dark:border-neutral-700 group-hover:border-amber-500/50'">
+                <app-icono *ngIf="marcaActiva === 'All'" nombre="check" [size]="12" stroke-width="3"></app-icono>
+              </div>
+              <span class="font-medium text-sm transition-colors"
+                [ngClass]="marcaActiva === 'All' ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'">
+                Todas las épocas
+              </span>
+            </button>
+            <button 
+              (click)="cambiarMarca('Retro')"
+              class="flex items-center gap-3 text-left w-full py-1.5 group"
+            >
+              <div class="w-5 h-5 rounded border flex items-center justify-center transition-colors"
+                [ngClass]="marcaActiva === 'Retro' ? 'bg-amber-500 border-amber-500 text-neutral-950' : 'border-neutral-300 dark:border-neutral-700 group-hover:border-amber-500/50'">
+                <app-icono *ngIf="marcaActiva === 'Retro'" nombre="check" [size]="12" stroke-width="3"></app-icono>
+              </div>
+              <span class="font-medium text-sm transition-colors"
+                [ngClass]="marcaActiva === 'Retro' ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'">
+                Colección Retro Clásica
+              </span>
+            </button>
+          </div>
+        </div>
+
       </div>
-    </ng-template>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT (Products) -->
+    <main class="flex-1 w-full min-w-0">
+      
+      <!-- Top Bar: Title, Count, Ordering -->
+      <div class="flex flex-col mb-6 gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-4">
+        <h2 class="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white tracking-tight">Catálogo</h2>
+        
+        <div class="flex items-center justify-between w-full">
+          <span class="text-[13px] md:text-sm text-neutral-500 font-bold bg-white dark:bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm">
+            {{ productosFiltrados.length }} productos
+          </span>
+          
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-bold text-neutral-500 hidden md:inline">Ordenar por:</span>
+            <div class="relative w-auto md:w-56 z-30">
+              <button 
+                (click)="toggleOrdenMenu()"
+                class="w-full flex items-center justify-between gap-2 px-4 py-2 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              >
+                <span class="truncate max-w-[120px] md:max-w-none">{{ ordenActivo }}</span>
+                <app-icono nombre="chevron-down" [size]="14" [class.rotate-180]="isOrdenMenuOpen" class="transition-transform duration-300 text-neutral-400"></app-icono>
+              </button>
+
+              <!-- Menu Ordenar -->
+              <div *ngIf="isOrdenMenuOpen" class="absolute top-full right-0 mt-2 w-48 md:w-full bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden">
+                <button 
+                  *ngFor="let orden of ordenes" 
+                  (click)="seleccionarOrden(orden)"
+                  class="w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  [ngClass]="ordenActivo === orden ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-neutral-600 dark:text-neutral-300'">
+                  {{orden}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div *ngIf="productosFiltrados.length > 0; else emptyState">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <div *ngFor="let prod of productosPaginados; let i = index"
+               class="opacity-0 animate-slide-up"
+               [style.animation-delay.ms]="(i % 12) * 75">
+            <app-tarjeta-producto [producto]="prod"></app-tarjeta-producto>
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="flex justify-center items-center gap-2 mt-12 mb-8" *ngIf="totalPaginas > 1">
+          <button 
+            (click)="cambiarPagina(paginaActual - 1)"
+            [disabled]="paginaActual === 1"
+            class="w-10 h-10 flex items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <app-icono nombre="chevron-down" [size]="14" class="rotate-90"></app-icono>
+          </button>
+          
+          <button 
+            *ngFor="let pag of paginas" 
+            (click)="cambiarPagina(pag)"
+            class="w-10 h-10 flex items-center justify-center rounded-lg font-bold text-sm transition-all"
+            [ngClass]="paginaActual === pag ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md' : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'">
+            {{ pag }}
+          </button>
+          
+          <button 
+            (click)="cambiarPagina(paginaActual + 1)"
+            [disabled]="paginaActual === totalPaginas"
+            class="w-10 h-10 flex items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <app-icono nombre="chevron-down" [size]="14" class="-rotate-90"></app-icono>
+          </button>
+        </div>
+      </div>
+
+      <!-- Estado Vacío -->
+      <ng-template #emptyState>
+        <div class="flex flex-col items-center justify-center py-16 px-4 text-center w-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 mt-4">
+          <div class="w-20 h-20 mb-6 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center">
+            <app-icono nombre="search" [size]="32" class="text-neutral-400"></app-icono>
+          </div>
+          <h3 class="text-xl md:text-2xl font-black text-neutral-900 dark:text-white mb-3">No encontramos resultados</h3>
+          <p class="text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-md mx-auto mb-8">
+            No hay productos que coincidan con tu búsqueda o filtros actuales. Intenta buscar con otros términos o ajusta las opciones.
+          </p>
+          <button 
+            (click)="limpiarFiltros()"
+            class="px-6 py-3 text-sm bg-neutral-900 hover:bg-black dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 font-bold rounded-xl shadow-lg transition-all active:scale-95">
+            Limpiar todos los filtros
+          </button>
+        </div>
+      </ng-template>
+
+    </main>
   </section>
+
+  <!-- Footer -->
+  <app-pie-pagina></app-pie-pagina>
+
+  <!-- Outlet para DetalleProducto como Modal/Drawer -->
+  <router-outlet></router-outlet>
 </div>

@@ -21,9 +21,16 @@
 @layer utilities {
   /* Custom scrollbar para ese look premium */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #0a0a0a; }
-  ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #404040; }
+  
+  /* Light mode scrollbar */
+  html:not(.dark) ::-webkit-scrollbar-track { background: #f5f5f5; }
+  html:not(.dark) ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 4px; }
+  html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+  
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar-track { background: #0a0a0a; }
+  .dark ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: #404040; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }

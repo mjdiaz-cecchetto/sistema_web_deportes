@@ -1,135 +1,123 @@
-<div class="min-h-screen bg-white dark:bg-neutral-950 font-sans selection:bg-amber-500 selection:text-neutral-950 pb-16 md:pb-16 md:bg-neutral-50 md:dark:bg-neutral-950">
+<!-- Overlay / Modal Wrapper -->
+<div class="fixed inset-0 z-[100] flex justify-end" *ngIf="producto">
   
-  <!-- Encabezado -->
-  <div class="hidden md:block">
-    <app-encabezado></app-encabezado>
-  </div>
-  <div class="md:hidden sticky top-0 z-[60]">
-    <!-- Header simple para mobile -->
-    <div class="flex items-center justify-between p-4 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-200/50 dark:border-neutral-800/50 transform-gpu">
+  <!-- Backdrop (Fondo oscuro) -->
+  <div 
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" 
+    (click)="volver()"
+  ></div>
+  
+  <!-- Drawer Panel (Derecha en Desktop, Full en Mobile) -->
+  <div class="relative w-full md:w-1/2 h-full bg-white dark:bg-neutral-950 shadow-2xl flex flex-col animate-slide-in-right overflow-y-auto">
+    
+    <!-- Mobile Header Minimalista -->
+    <div class="md:hidden sticky top-0 z-[60] flex items-center justify-between p-4 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-200/50 dark:border-neutral-800/50">
       <button (click)="volver()" class="p-2 -ml-2 text-neutral-900 dark:text-white active:scale-90 transition-transform">
         <app-icono nombre="arrow-left" [size]="24"></app-icono>
       </button>
       <button class="p-2 text-neutral-900 dark:text-white active:scale-90 transition-transform relative">
         <app-icono nombre="shopping-cart" [size]="20"></app-icono>
-        <!-- Badge -->
         <span class="absolute top-1.5 right-1 flex h-4 w-4">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-4 w-4 bg-amber-500 items-center justify-center text-[9px] font-black text-neutral-950 border border-white dark:border-neutral-900">3</span>
         </span>
       </button>
     </div>
-  </div>
 
-  <!-- Loading State -->
-  <div *ngIf="!producto" class="flex justify-center items-center h-[60vh]">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-  </div>
+    <!-- Botón Cerrar (Solo Desktop) -->
+    <button 
+      (click)="volver()" 
+      class="hidden md:flex absolute top-4 right-4 z-[60] p-3 rounded-full bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+    >
+      <app-icono nombre="x" [size]="20"></app-icono>
+    </button>
 
-  <!-- Content -->
-  <div *ngIf="producto" class="max-w-6xl mx-auto md:px-8 md:mt-12">
-    
-    <!-- Desktop Breadcrumbs -->
-    <div class="hidden md:flex items-center gap-4 mb-8">
-      <button (click)="volver()" class="flex items-center gap-2 text-sm font-bold text-neutral-500 hover:text-amber-500 transition-colors">
-        <app-icono nombre="arrow-left" [size]="16"></app-icono> Volver al catálogo
-      </button>
-    </div>
-
-    <!-- TÍTULO Y PRECIO EN MOBILE (Arriba de la foto estilo Adidas) -->
-    <div class="md:hidden px-4 pt-4 pb-2 bg-white dark:bg-neutral-950">
-      <h1 class="text-lg font-black text-neutral-900 dark:text-white uppercase leading-tight tracking-tight mb-2">
-        {{displayName}}
-      </h1>
-      <p class="text-base font-black text-neutral-900 dark:text-white mb-2">
-        {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
-      </p>
-    </div>
-
-    <!-- Contenedor Principal (Mobile apilado / Desktop 50-50) -->
-    <div class="flex flex-col md:flex-row md:gap-16">
+    <!-- Contenido -->
+    <div class="flex flex-col flex-grow">
       
-      <!-- IZQUIERDA: Galería (Mobile Swipeable Carousel / Desktop Rounded) -->
-      <div class="w-full md:w-1/2 flex flex-col md:gap-4 relative">
+      <!-- Carrusel de Imágenes (Mobile: Chico + Dots / Desktop: Grande) -->
+      <div class="relative w-full bg-neutral-50 dark:bg-neutral-900 overflow-hidden">
         
-        <!-- Carrusel Mobile / Imagen Principal Desktop -->
-        <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar md:rounded-3xl md:border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 h-[60vh] md:h-auto relative">
-          <!-- Mobile Carousel: Shows all images -->
-          <div *ngFor="let img of producto.images; let first = first" 
-               class="w-full h-full flex-shrink-0 snap-center relative md:hidden">
-            <img [src]="img.url" [alt]="img.alt" class="w-full h-full object-cover">
-            <div *ngIf="first && producto.badge" class="absolute top-4 right-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-[10px] font-black tracking-widest uppercase shadow-sm">
-              {{producto.badge}}
-            </div>
-          </div>
-          <!-- Desktop Main Image -->
-          <div class="hidden md:block w-full relative">
-            <img [src]="mainImage" [alt]="displayName" class="w-full aspect-square object-cover">
-            <div *ngIf="producto.badge" class="absolute top-4 right-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-xs font-black tracking-widest uppercase shadow-sm">
-              {{producto.badge}}
-            </div>
+        <div 
+          class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar md:hidden bg-neutral-100 dark:bg-neutral-900"
+          (scroll)="onScroll($event)"
+        >
+          <div *ngFor="let img of producto.images" class="w-full aspect-[4/3] flex-shrink-0 snap-center relative flex items-center justify-center p-2">
+            <img [src]="img.url" [alt]="img.alt" class="max-w-full max-h-full object-contain">
           </div>
         </div>
 
-        <!-- Indicador de scroll (Barrita estilo Adidas) - Solo mobile -->
-        <div class="md:hidden w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1">
-          <div class="w-1/2 h-full bg-neutral-900 dark:bg-white transition-all duration-300"></div>
+        <!-- Indicadores Dots (Solo Mobile) -->
+        <div class="md:hidden absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          <div 
+            *ngFor="let img of producto.images; let i = index" 
+            class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+            [ngClass]="activeImageIndex === i ? 'bg-amber-500 w-4' : 'bg-neutral-400 dark:bg-neutral-600'"
+          ></div>
         </div>
-        
-        <!-- Miniaturas (Thumbnails) - Solo Desktop -->
-        <div class="hidden md:flex justify-start gap-3 pb-2 mt-4 overflow-x-auto">
-          <button *ngFor="let img of producto.images" 
-                  (click)="setMainImage(img.url)" 
-                  class="w-24 h-24 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0"
-                  [ngClass]="mainImage === img.url ? 'border-amber-500 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'">
-            <img [src]="img.url" [alt]="img.alt" class="w-full h-full object-cover">
-          </button>
+
+        <!-- Imagen Desktop -->
+        <div class="hidden md:flex w-full relative h-[50vh] bg-neutral-100 dark:bg-neutral-900 justify-center items-center">
+          <img [src]="mainImage" [alt]="displayName" class="w-full h-full object-contain p-4">
+          <div *ngIf="producto.badge" class="absolute top-4 left-4 px-3 py-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white text-xs font-black tracking-widest uppercase shadow-sm">
+            {{producto.badge}}
+          </div>
         </div>
+
+      </div>
+      
+      <!-- Miniaturas Desktop -->
+      <div class="hidden md:flex justify-center gap-3 p-4 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+        <button *ngFor="let img of producto.images" 
+                (click)="setMainImage(img.url)" 
+                class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0"
+                [ngClass]="mainImage === img.url ? 'border-amber-500' : 'border-transparent opacity-60 hover:opacity-100'">
+          <img [src]="img.url" [alt]="img.alt" class="w-full h-full object-cover">
+        </button>
       </div>
 
-      <!-- DERECHA: Información (Mobile fluye normal / Desktop Sticky) -->
-      <div class="w-full md:w-1/2 flex flex-col bg-white dark:bg-neutral-950 md:bg-transparent px-4 pt-6 pb-10 md:px-0 md:pt-0 md:pb-0">
+      <!-- Información del Producto -->
+      <div class="px-5 py-6 md:px-8 flex flex-col flex-grow">
         
-        <!-- Info Header Desktop (Oculto en mobile porque ya está arriba) -->
-        <div class="hidden md:block mb-8">
-          <p class="text-xs font-bold tracking-widest text-neutral-400 uppercase mb-2">
-            {{producto.brand}} • {{producto.league}} • {{producto.year}}
-          </p>
-          <h1 class="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase leading-[1.1] tracking-tight mb-4">
-            {{displayName}}
-          </h1>
-          <p class="text-3xl font-black text-amber-500">
-            {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
-          </p>
-        </div>
+        <p class="text-[10px] md:text-xs font-bold tracking-widest text-neutral-400 uppercase mb-2">
+          {{producto.brand}} • {{producto.league}} • {{producto.year}}
+        </p>
+        
+        <h1 class="text-2xl md:text-4xl font-black text-neutral-900 dark:text-white uppercase leading-[1.1] tracking-tight mb-3">
+          {{displayName}}
+        </h1>
+        
+        <p class="text-2xl md:text-3xl font-black text-amber-500 mb-6">
+          {{ producto.price * 1000 | currency:'ARS':'symbol-narrow':'1.0-0':'es-AR' }}
+        </p>
 
         <!-- Personalización (si aplica) -->
-        <div *ngIf="producto.customization" class="bg-neutral-100 dark:bg-neutral-900 flex items-center gap-4 p-4 mb-8 rounded-xl border border-neutral-200 dark:border-neutral-800">
-          <div class="w-12 h-12 flex items-center justify-center bg-white dark:bg-neutral-950 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-800">
-            <span class="text-xl font-black text-neutral-900 dark:text-white">{{producto.customization.number}}</span>
+        <div *ngIf="producto.customization" class="bg-neutral-100 dark:bg-neutral-900/50 flex items-center gap-4 p-4 mb-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+          <div class="w-10 h-10 flex items-center justify-center bg-white dark:bg-neutral-950 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-800">
+            <span class="text-lg font-black text-neutral-900 dark:text-white">{{producto.customization.number}}</span>
           </div>
           <div>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400 font-bold uppercase tracking-wider mb-0.5">Estampado Oficial</p>
-            <p class="text-base font-black text-neutral-900 dark:text-white uppercase">{{producto.customization.playerName}}</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 font-bold uppercase tracking-wider mb-0.5">Estampado Oficial</p>
+            <p class="text-sm font-black text-neutral-900 dark:text-white uppercase">{{producto.customization.playerName}}</p>
           </div>
           <div *ngIf="producto.customization.isHistorical" class="ml-auto">
-            <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest rounded border border-amber-500/20">Leyenda</span>
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-500 text-[9px] font-black uppercase tracking-widest rounded border border-amber-500/20">Leyenda</span>
           </div>
         </div>
 
         <!-- Alerta de Tendencia -->
-        <div *ngIf="!producto.customization" class="bg-neutral-100 dark:bg-neutral-900 flex items-start gap-3 p-4 mb-8 rounded-xl">
-          <app-icono nombre="flame" [size]="20" class="text-neutral-900 dark:text-white flex-shrink-0 mt-0.5"></app-icono>
-          <p class="text-sm text-neutral-900 dark:text-white">
-            <strong>¡Tendencia!</strong> Este artículo tiene una alta demanda en este momento.
+        <div *ngIf="!producto.customization" class="bg-neutral-100 dark:bg-neutral-900/50 flex items-start gap-3 p-4 mb-6 rounded-xl">
+          <app-icono nombre="flame" [size]="18" class="text-neutral-900 dark:text-white flex-shrink-0 mt-0.5"></app-icono>
+          <p class="text-xs md:text-sm text-neutral-900 dark:text-white">
+            <strong>¡Tendencia!</strong> Este artículo tiene alta demanda.
           </p>
         </div>
 
         <!-- Selector de Talles -->
         <div class="mb-8">
           <div class="flex justify-between items-center mb-4">
-            <span class="text-sm font-bold text-neutral-900 dark:text-white uppercase tracking-wider">Talle</span>
-            <span class="text-sm font-bold text-neutral-500 dark:text-neutral-400 underline cursor-pointer hover:text-amber-500 transition-colors">Guía de talles</span>
+            <span class="text-xs md:text-sm font-bold text-neutral-900 dark:text-white uppercase tracking-wider">Talle</span>
+            <span class="text-xs font-bold text-neutral-500 underline cursor-pointer hover:text-amber-500 transition-colors">Guía de talles</span>
           </div>
           
           <div class="flex flex-wrap gap-2 md:gap-3">
@@ -138,7 +126,7 @@
                     class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl border text-sm font-black transition-all relative overflow-hidden"
                     [ngClass]="{
                       'border-amber-500 bg-amber-500 text-neutral-950 shadow-lg shadow-amber-500/20 scale-105': selectedSize === variant.size && variant.stock > 0,
-                      'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-500': selectedSize !== variant.size && variant.stock > 0,
+                      'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400': selectedSize !== variant.size && variant.stock > 0,
                       'border-neutral-100 dark:border-neutral-800/50 bg-neutral-50 dark:bg-neutral-900/20 text-neutral-300 dark:text-neutral-700 cursor-not-allowed opacity-60': variant.stock === 0
                     }">
               <span [class.line-through]="variant.stock === 0" [class.opacity-50]="variant.stock === 0">{{variant.size}}</span>
@@ -147,25 +135,24 @@
               </div>
             </button>
           </div>
-          <p *ngIf="selectedSize" class="mt-3 text-xs font-bold text-emerald-600 dark:text-emerald-500 flex items-center gap-1.5">
-            <app-icono nombre="check" [size]="14"></app-icono> En stock, listo para envío
-          </p>
         </div>
 
-        <!-- Botón Añadir al Carrito (Redondeado y con animación) -->
-        <button class="w-full py-4 md:py-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl font-black text-base md:text-lg hover:bg-amber-500 hover:text-neutral-950 dark:hover:bg-amber-500 transition-all flex justify-center items-center gap-3 shadow-lg hover:shadow-amber-500/20 group mb-8 uppercase tracking-widest">
-          <app-icono nombre="shopping-cart" [size]="20" class="group-hover:animate-bounce"></app-icono>
-          Añadir al carrito
-        </button>
+        <!-- Añadir al Carrito -->
+        <div class="mt-auto pb-4">
+          <button class="w-full py-4 md:py-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl font-black text-sm md:text-base hover:bg-amber-500 hover:text-neutral-950 dark:hover:bg-amber-500 transition-all duration-300 flex justify-center items-center gap-3 shadow-lg hover:shadow-amber-500/30 hover:-translate-y-1 active:scale-[0.98] active:translate-y-0 group uppercase tracking-widest">
+            <app-icono nombre="shopping-cart" [size]="18" class="group-hover:animate-bounce"></app-icono>
+            Añadir al carrito
+          </button>
+        </div>
 
         <!-- Info Extra -->
-        <div class="flex flex-col gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-6">
-          <p class="text-sm text-neutral-900 dark:text-white flex items-center gap-4 font-bold">
-            <app-icono nombre="clock" [size]="24" class="text-neutral-900 dark:text-white"></app-icono>
+        <div class="flex flex-col gap-3 md:gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5 md:pt-6 mt-2 pb-6 md:pb-0">
+          <p class="text-xs md:text-sm text-neutral-900 dark:text-white flex items-center gap-3 font-bold">
+            <app-icono nombre="clock" [size]="20" class="text-neutral-900 dark:text-white"></app-icono>
             Despacho en 24hs hábiles
           </p>
-          <p class="text-sm text-neutral-900 dark:text-white flex items-center gap-4 font-bold">
-            <app-icono nombre="trophy" [size]="24" class="text-neutral-900 dark:text-white"></app-icono>
+          <p class="text-xs md:text-sm text-neutral-900 dark:text-white flex items-center gap-3 font-bold">
+            <app-icono nombre="trophy" [size]="20" class="text-neutral-900 dark:text-white"></app-icono>
             Calidad Premium Original
           </p>
         </div>

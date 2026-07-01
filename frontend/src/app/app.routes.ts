@@ -4,7 +4,12 @@ import { PaginaProductosComponent } from './client/components/pagina-productos/p
 import { DetalleProductoComponent } from './client/components/detalle-producto/detalle-producto.component';
 
 export const routes: Routes = [
-  { path: '', component: PaginaProductosComponent },
-  { path: 'producto/:id', component: DetalleProductoComponent },
+  { 
+    path: '', 
+    component: PaginaProductosComponent,
+    children: [
+      { path: 'producto/:id', component: DetalleProductoComponent }
+    ]
+  },
   { path: '**', redirectTo: '' }
 ];
