@@ -145,11 +145,29 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+    <div *ngIf="productosFiltrados.length > 0; else emptyState" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
       <app-tarjeta-producto 
         *ngFor="let prod of productosFiltrados" 
         [producto]="prod">
       </app-tarjeta-producto>
     </div>
+
+    <!-- Estado Vacío -->
+    <ng-template #emptyState>
+      <div class="flex flex-col items-center justify-center py-10 md:py-20 px-4 text-center w-full">
+        <div class="w-16 h-16 md:w-24 md:h-24 mb-4 md:mb-6 rounded-full bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
+          <app-icono nombre="search" [size]="24" class="text-neutral-400 dark:text-neutral-500"></app-icono>
+        </div>
+        <h3 class="text-xl md:text-2xl font-black text-neutral-900 dark:text-white mb-2 md:mb-3">No encontramos resultados</h3>
+        <p class="text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-md mx-auto mb-6 md:mb-8">
+          No hay productos que coincidan con tu búsqueda o filtros actuales. Intenta buscar con otros términos o ajusta las opciones.
+        </p>
+        <button 
+          (click)="busqueda = ''; ligaActiva = 'Todas'; marcaActiva = 'All'; categoriaActiva = 'Todas'"
+          class="px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-base bg-neutral-900 hover:bg-black dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 font-bold rounded-xl shadow-lg transition-all active:scale-95">
+          Limpiar todos los filtros
+        </button>
+      </div>
+    </ng-template>
   </section>
 </div>
