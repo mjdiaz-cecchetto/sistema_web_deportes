@@ -34,15 +34,17 @@
         </button>
 
         <!-- Carrito (Botón destacado) -->
-        <button class="relative flex items-center justify-center p-2.5 md:px-5 md:py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg group">
-          <app-icono nombre="shopping-cart" [size]="20" class="group-hover:animate-bounce"></app-icono>
-          <span class="hidden md:block ml-2 font-bold text-sm">Carrito</span>
-          <!-- Badge animado del carrito -->
-          <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 flex h-5 w-5 md:h-6 md:w-6">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-5 w-5 md:h-6 md:w-6 bg-amber-500 items-center justify-center text-[10px] md:text-xs font-black text-neutral-950 border-2 border-neutral-900 dark:border-white">3</span>
-          </span>
-        </button>
+        @if (carritoService.resumen().cantidadArticulos > 0) {
+          <button (click)="carritoService.toggleCarrito()" class="relative flex items-center justify-center p-2.5 md:px-5 md:py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg group">
+            <app-icono nombre="shopping-cart" [size]="20" class="group-hover:animate-bounce"></app-icono>
+            <span class="hidden md:block ml-2 font-bold text-sm">Carrito</span>
+            <!-- Badge animado del carrito -->
+            <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 flex h-5 w-5 md:h-6 md:w-6">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 md:h-6 md:w-6 bg-amber-500 items-center justify-center text-[10px] md:text-xs font-black text-neutral-950 border-2 border-neutral-900 dark:border-white">{{ carritoService.resumen().cantidadArticulos }}</span>
+            </span>
+          </button>
+        }
 
         <!-- Hamburguesa Mobile -->
         <button (click)="toggleMenu()" class="lg:hidden p-2.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl active:scale-95 transition-all">

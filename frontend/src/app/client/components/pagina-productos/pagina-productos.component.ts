@@ -145,6 +145,20 @@ export class PaginaProductosComponent implements OnInit {
     this.paginaActual = 1;
   }
 
+  aplicarFiltroDesdePortada(filtro: {tipo: string, valor: string}) {
+    this.limpiarFiltros();
+    
+    if (filtro.tipo === 'marca') {
+      this.marcaActiva = filtro.valor;
+    } else if (filtro.tipo === 'categoria') {
+      this.categoriaActiva = filtro.valor;
+    } else if (filtro.tipo === 'liga') {
+      this.ligaActiva = filtro.valor;
+    } else if (filtro.tipo === 'seleccion') {
+      this.seleccionActiva = filtro.valor;
+    }
+  }
+
   get totalPaginas(): number {
     return Math.ceil(this.productosFiltrados.length / this.itemsPorPagina);
   }

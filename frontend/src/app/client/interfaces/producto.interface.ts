@@ -22,6 +22,7 @@ export interface CamisetaProducto {
   season: string;
   year: number;
   price: number;
+  discountPercentage?: number;
   badge: 'Edición Especial' | 'Mundialista' | 'Rareza' | 'Vintage' | 'Regular';
   brand: 'Nike' | 'Adidas' | 'Puma' | 'Le Coq Sportif' | 'Umbro' | 'Ennerre' | 'Kappa' | 'Lotto';
   type: 'Local' | 'Visitante' | 'Alternativa' | 'Edición Especial';
