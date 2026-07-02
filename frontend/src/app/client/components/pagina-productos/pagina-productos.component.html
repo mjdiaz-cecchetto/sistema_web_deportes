@@ -2,7 +2,7 @@
   
   <app-encabezado></app-encabezado>
   
-  <app-portada></app-portada>
+  <app-portada (aplicarFiltro)="aplicarFiltroDesdePortada($event)"></app-portada>
 
   <!-- MOBILE FILTERS (Old Style - Hidden on Desktop) -->
   <div id="catalogo-mobile" class="block lg:hidden sticky top-0 z-50 bg-neutral-50/80 dark:bg-neutral-950/70 backdrop-blur-2xl border-y border-neutral-200 dark:border-neutral-800/50 py-3 transform-gpu scroll-mt-20">
@@ -234,17 +234,56 @@
       <div class="flex flex-col mb-6 gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-4">
         <h2 class="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white tracking-tight">Catálogo</h2>
         
-        <div class="flex items-center justify-between w-full">
-          <span class="text-[13px] md:text-sm text-neutral-500 font-bold bg-white dark:bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm">
-            {{ productosFiltrados.length }} productos
-          </span>
+        <div class="flex items-start justify-between w-full gap-4">
           
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-bold text-neutral-500 hidden md:inline">Ordenar por:</span>
+          <div class="flex flex-wrap items-center gap-2 flex-1">
+            <span class="h-9 md:h-10 flex items-center justify-center text-[13px] md:text-sm text-neutral-500 font-bold bg-white dark:bg-neutral-900 px-3 rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm whitespace-nowrap">
+              {{ productosFiltrados.length }} productos
+            </span>
+            
+            <!-- Active Filters Chips -->
+            <div *ngIf="marcaActiva !== 'All'" class="flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 rounded-lg text-xs font-bold border border-amber-200 dark:border-amber-800/50 shadow-sm animate-fade-in">
+              {{ marcaActiva }}
+              <button (click)="cambiarMarca('All')" class="hover:bg-amber-200/50 dark:hover:bg-amber-800/50 rounded-full p-0.5 ml-1 transition-colors">
+                <app-icono nombre="x" [size]="12"></app-icono>
+              </button>
+            </div>
+            
+            <div *ngIf="categoriaActiva !== 'Todas'" class="flex items-center gap-1 px-2.5 py-1 bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300 rounded-lg text-xs font-bold border border-cyan-200 dark:border-cyan-800/50 shadow-sm animate-fade-in">
+              {{ categoriaActiva }}
+              <button (click)="seleccionarCategoria('Todas')" class="hover:bg-cyan-200/50 dark:hover:bg-cyan-800/50 rounded-full p-0.5 ml-1 transition-colors">
+                <app-icono nombre="x" [size]="12"></app-icono>
+              </button>
+            </div>
+            
+            <div *ngIf="ligaActiva !== 'Todas'" class="flex items-center gap-1 px-2.5 py-1 bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-800/50 shadow-sm animate-fade-in">
+              {{ ligaActiva }}
+              <button (click)="seleccionarLiga('Todas')" class="hover:bg-rose-200/50 dark:hover:bg-rose-800/50 rounded-full p-0.5 ml-1 transition-colors">
+                <app-icono nombre="x" [size]="12"></app-icono>
+              </button>
+            </div>
+            
+            <div *ngIf="seleccionActiva !== 'Todas'" class="flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 rounded-lg text-xs font-bold border border-emerald-200 dark:border-emerald-800/50 shadow-sm animate-fade-in">
+              {{ seleccionActiva }}
+              <button (click)="seleccionarSeleccion('Todas')" class="hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 rounded-full p-0.5 ml-1 transition-colors">
+                <app-icono nombre="x" [size]="12"></app-icono>
+              </button>
+            </div>
+            
+            <div *ngIf="busqueda" class="flex items-center gap-1 px-2.5 py-1 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 rounded-lg text-xs font-bold border border-neutral-200 dark:border-neutral-700 shadow-sm animate-fade-in">
+              "{{ busqueda }}"
+              <button (click)="actualizarBusqueda('')" class="hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full p-0.5 ml-1 transition-colors">
+                <app-icono nombre="x" [size]="12"></app-icono>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="text-sm font-bold text-neutral-500 hidden md:inline h-10 flex items-center">Ordenar por:</span>
             <div class="relative w-auto md:w-56 z-30">
               <button 
                 (click)="toggleOrdenMenu()"
-                class="w-full flex items-center justify-between gap-2 px-4 py-2 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                class="w-full h-9 md:h-10 flex items-center justify-between gap-2 px-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold transition-all shadow-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
               >
                 <span class="truncate max-w-[120px] md:max-w-none">{{ ordenActivo }}</span>
                 <app-icono nombre="chevron-down" [size]="14" [class.rotate-180]="isOrdenMenuOpen" class="transition-transform duration-300 text-neutral-400"></app-icono>

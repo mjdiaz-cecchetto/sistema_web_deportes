@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CamisetaProducto } from '../../interfaces/producto.interface';
 import { IconoComponent } from '../icono/icono.component';
-
+import { CarritoService } from '../../services/carrito.service';
+import { ToastService } from '../../services/toast.service';
 const BADGE_CONFIG: Record<string, { bg: string, text: string, border: string, icon: string }> = {
   'Vintage': { bg: 'bg-indigo-500/10', text: 'text-indigo-500 dark:text-indigo-400', border: 'border-indigo-500/20', icon: 'clock' },
   'Edición Especial': { bg: 'bg-amber-500/10', text: 'text-amber-500 dark:text-amber-400', border: 'border-amber-500/20', icon: 'star' },
@@ -22,12 +23,28 @@ const BADGE_CONFIG: Record<string, { bg: string, text: string, border: string, i
 export class TarjetaProductoComponent {
   @Input() producto!: CamisetaProducto;
   
+  constructor(
+    public carritoService: CarritoService,
+    private toastService: ToastService
+  ) {}
+
   isHovered = false;
   isFavorite = false;
   selectedSize: string | null = null;
   
   get badgeConfig() {
     return this.producto?.badge ? BADGE_CONFIG[this.producto.badge] : null;
+  }
+
+  get hasDiscount(): boolean {
+    return !!this.producto?.discountPercentage && this.producto.discountPercentage > 0;
+  }
+
+  get finalPrice(): number {
+    if (this.hasDiscount) {
+      return this.producto.price * (1 - (this.producto.discountPercentage! / 100));
+    }
+    return this.producto.price;
   }
 
   get mainImage(): string {
@@ -47,12 +64,22 @@ export class TarjetaProductoComponent {
     return name;
   }
 
+  readonly tallesGenerales = ['S', 'M', 'L', 'XL', 'XXL'];
+
   get availableSizes(): string[] {
     return this.producto?.variants?.map(v => v.size) || [];
   }
 
   getVariantStock(size: string): number {
     return this.producto?.variants?.find(v => v.size === size)?.stock || 0;
+  }
+
+  get cantidadEnCarrito(): number {
+    if (!this.producto) return 0;
+    const items = this.carritoService.items();
+    return items
+      .filter(i => i.producto.id === this.producto.id)
+      .reduce((sum, item) => sum + item.cantidad, 0);
   }
 
   toggleFavorite(event: Event) {
@@ -64,11 +91,33 @@ export class TarjetaProductoComponent {
     event.stopPropagation();
     if (this.getVariantStock(size) > 0) {
       this.selectedSize = this.selectedSize === size ? null : size;
+    } else {
+      this.toastService.show(`El talle ${size} no se encuentra disponible en este momento`, 'error');
     }
   }
 
   onImageError(event: any) {
     // Reemplazo seguro de imagen si falla por error de red/Unsplash
     event.target.src = 'https://placehold.co/800x1000/171717/333333?text=Imagen+Rota';
+  }
+
+  isAdding = false;
+
+  agregarAlCarrito(event: Event) {
+    event.stopPropagation();
+    
+    if (!this.selectedSize) {
+      this.toastService.show('Selecciona un talle antes de añadir al carrito', 'error');
+      return;
+    }
+    
+    this.isAdding = true;
+    this.carritoService.agregarAlCarrito(this.producto, this.selectedSize);
+    this.selectedSize = null; // Reset selection after adding
+    
+    // Quitar la animación después de 1 segundo
+    setTimeout(() => {
+      this.isAdding = false;
+    }, 1000);
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconoComponent } from '../icono/icono.component';
 
@@ -10,8 +10,13 @@ import { IconoComponent } from '../icono/icono.component';
   styleUrl: './portada.component.scss'
 })
 export class PortadaComponent {
-  scrollToCatalog() {
-    const catalogo = document.getElementById('catalogo');
+  @Output() aplicarFiltro = new EventEmitter<{tipo: string, valor: string}>();
+
+  scrollToCatalog(tipo?: string, valor?: string) {
+    if (tipo && valor) {
+      this.aplicarFiltro.emit({tipo, valor});
+    }
+    const catalogo = document.getElementById('catalogo-productos');
     if (catalogo) {
       catalogo.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {

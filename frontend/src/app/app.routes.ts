@@ -3,6 +3,8 @@ import { PaginaProductosComponent } from './client/components/pagina-productos/p
 
 import { DetalleProductoComponent } from './client/components/detalle-producto/detalle-producto.component';
 
+import { CheckoutComponent } from './client/components/checkout/checkout.component';
+
 export const routes: Routes = [
   { 
     path: '', 
@@ -11,5 +13,6 @@ export const routes: Routes = [
       { path: 'producto/:id', component: DetalleProductoComponent }
     ]
   },
+  { path: 'checkout', component: CheckoutComponent },
   { path: '**', redirectTo: '' }
 ];

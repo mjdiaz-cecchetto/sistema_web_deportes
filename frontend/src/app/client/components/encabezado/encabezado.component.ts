@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { IconoComponent } from '../icono/icono.component';
-
+import { CarritoService } from '../../services/carrito.service';
 @Component({
   selector: 'app-encabezado',
   standalone: true,
@@ -20,7 +20,10 @@ export class EncabezadoComponent implements OnInit {
     { label: 'Ediciones Especiales', active: false }
   ];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public carritoService: CarritoService
+  ) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
