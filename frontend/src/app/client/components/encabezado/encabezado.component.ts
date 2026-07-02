@@ -61,4 +61,58 @@ export class EncabezadoComponent implements OnInit {
       }
     }
   }
+
+  // Lógica de arrastre (Drag) para el FAB del carrito
+  fabTransform = 'translate(0px, 0px)';
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private currentX = 0;
+  private currentY = 0;
+  isDragging = false;
+  isDragActive = false;
+
+  onTouchStart(event: TouchEvent) {
+    this.isDragging = false;
+    this.isDragActive = true;
+    this.dragStartX = event.touches[0].clientX - this.currentX;
+    this.dragStartY = event.touches[0].clientY - this.currentY;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.isDragging = true;
+    let newX = event.touches[0].clientX - this.dragStartX;
+    let newY = event.touches[0].clientY - this.dragStartY;
+    
+    if (isPlatformBrowser(this.platformId)) {
+       const margin = 24;
+       const size = 56;
+       
+       const minX = -(window.innerWidth - size - margin);
+       const maxX = margin;
+       
+       const minY = -(window.innerHeight - size - margin);
+       const maxY = margin;
+
+       newX = Math.max(minX, Math.min(newX, maxX));
+       newY = Math.max(minY, Math.min(newY, maxY));
+    }
+    
+    this.currentX = newX;
+    this.currentY = newY;
+    this.fabTransform = `translate(${this.currentX}px, ${this.currentY}px)`;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    this.isDragActive = false;
+  }
+
+  fabClick(event: Event) {
+    if (this.isDragging) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.isDragging = false;
+      return;
+    }
+    this.carritoService.toggleCarrito();
+  }
 }

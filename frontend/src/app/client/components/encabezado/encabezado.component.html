@@ -33,9 +33,9 @@
           <app-icono [nombre]="isDarkMode ? 'sun' : 'moon'" [size]="20"></app-icono>
         </button>
 
-        <!-- Carrito (Botón destacado) -->
+        <!-- Carrito (Botón destacado - Solo Desktop) -->
         @if (carritoService.resumen().cantidadArticulos > 0) {
-          <button (click)="carritoService.toggleCarrito()" class="relative flex items-center justify-center p-2.5 md:px-5 md:py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-xl md:rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg group">
+          <button (click)="carritoService.toggleCarrito()" class="hidden md:flex relative items-center justify-center px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg group">
             <app-icono nombre="shopping-cart" [size]="20" class="group-hover:animate-bounce"></app-icono>
             <span class="hidden md:block ml-2 font-bold text-sm">Carrito</span>
             <!-- Badge animado del carrito -->
@@ -98,3 +98,22 @@
     </div>
   </div>
 </div>
+
+<!-- FAB Carrito (Solo Mobile) -->
+@if (carritoService.resumen().cantidadArticulos > 0 && !carritoService.isOpen()) {
+  <button 
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)"
+    (click)="fabClick($event)"
+    [style.transform]="fabTransform"
+    style="touch-action: none;"
+    [ngClass]="isDragActive ? 'scale-110 shadow-2xl brightness-110 z-[100]' : 'hover:scale-105 transition-all duration-300'"
+    class="md:hidden fixed bottom-6 right-6 z-[90] w-14 h-14 bg-amber-500 text-neutral-950 rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(245,158,11,0.4)]">
+    <app-icono nombre="shopping-cart" [size]="24"></app-icono>
+    <span class="absolute -top-1 -right-1 flex h-6 w-6">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neutral-900 dark:bg-white opacity-40"></span>
+      <span class="relative inline-flex rounded-full h-6 w-6 bg-neutral-900 dark:bg-white items-center justify-center text-[11px] font-black text-white dark:text-neutral-950 border-2 border-amber-500">{{ carritoService.resumen().cantidadArticulos }}</span>
+    </span>
+  </button>
+}

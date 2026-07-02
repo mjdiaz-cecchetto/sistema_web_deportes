@@ -18,6 +18,7 @@ export class DetalleProductoComponent implements OnInit {
   producto?: CamisetaProducto;
   selectedSize: string | null = null;
   mainImage: string = '';
+  isFullscreenImage = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -138,6 +139,32 @@ export class DetalleProductoComponent implements OnInit {
     // Solo cerrar si es un swipe horizontal (más movimiento en X que en Y) hacia la derecha
     if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 70) {
       this.volver();
+    }
+  }
+
+  toggleFullscreenImage() {
+    this.isFullscreenImage = !this.isFullscreenImage;
+  }
+
+  fullScreenTouchStartX = 0;
+  fullScreenTouchStartY = 0;
+
+  onFullScreenTouchStart(e: TouchEvent) {
+    this.fullScreenTouchStartX = e.changedTouches[0].screenX;
+    this.fullScreenTouchStartY = e.changedTouches[0].screenY;
+  }
+
+  onFullScreenTouchEnd(e: TouchEvent) {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    
+    const deltaX = touchEndX - this.fullScreenTouchStartX;
+    const deltaY = touchEndY - this.fullScreenTouchStartY;
+
+    // Detectar swipe horizontal (más en X que en Y y mayor a 70px)
+    // Funciona deslizando hacia cualquier lado (izquierda o derecha) por comodidad.
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 70) {
+      this.isFullscreenImage = false;
     }
   }
 }
